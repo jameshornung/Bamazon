@@ -19,7 +19,7 @@ if (err) throw err;
 console.log('');
 console.log('Items in Store')
 for(i=0;i<res.length;i++){
-	console.log('Item ID:' + res[i].id + ' Product Name: ' + res[i].ProductName + ' Price: ' + res[i].Price)
+	console.log('Item ID:' + res[i].id + ' Product Name: ' + res[i].ProductName + ' Price: ' + '$' + res[i].Price)
 }
 console.log('')
 placeOrder();
@@ -40,15 +40,36 @@ function placeOrder(){
 		if(answer.selectQuantity > res[0].StockQuantity){
 			console.log('Insufficient Quantity');
 			console.log('This order has been cancelled');
+			inquirer.prompt([{
+				name: 'tryAgain',
+				message: 'Would you like to attempt a new order? (Y or N)'
+			}]).then(function(answer){
+				var ans = answer.tryAgain.toUpperCase();
+				if(ans === 'Y'){
+					placeOrder();
+				}
+				else if(ans === 'N'){
+					console.log('Thanks for shopping at Bamazon.  Sorry we were unable to fulfill your order at this time');
+					console.log('');
+					connection.end();
+				}
+				else{
+					console.log('That was an invalid input, you dumbass.')
+					console.log('');
+					connection.end();
+				}
+			})
 		}
 		else{
 			console.log('Thanks for your order');
 			console.log('You owe $' + res[0].Price * answer.selectQuantity);
+			console.log('');
 			connection.query('UPDATE products SET ? Where ?', [{
 				StockQuantity: res[0].StockQuantity - answer.selectQuantity
 			},{
 				id: answer.selectId
 			}], function(err, res){});
+			connection.end();
 		}
 	})
 
