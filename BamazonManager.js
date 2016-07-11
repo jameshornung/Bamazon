@@ -17,10 +17,13 @@ connection.connect(function(err){
 
 function managerInput(){
 	inquirer.prompt([{
+		type: 'list',
 		name: 'input',
-		message: 'What would you like to do today? 1) View Products for sale 2) View low inventory 3) Add to inventory 4) Add new product'
+		message: 'What would you like to do today?',
+		choices: ['1) View Products for sale', '2) View low inventory', '3) Add to inventory', '4) Add new product']
 	}]).then(function(answer){
-		if(answer.input == 1){
+		console.log('answer selected', answer.input);
+		if(answer.input === '1) View Products for sale'){
 			connection.query('SELECT * FROM products', function(err, res){
 			if (err) throw err;
 			console.log('');
@@ -36,7 +39,7 @@ function managerInput(){
 			newTransaction();
 			})
 		}
-		else if(answer.input == 2){
+		else if(answer.input === '2) View low inventory'){
 			connection.query('SELECT * FROM products WHERE StockQuantity < 5', function(err, res){
 				if (err) throw err;
 				for(i=0;i<res.length;i++){
@@ -48,7 +51,7 @@ function managerInput(){
 				newTransaction();
 			})
 		}
-		else if(answer.input == 3){
+		else if(answer.input === '3) Add to inventory'){
 			inquirer.prompt([{
 				name: 'item',
 				message: 'Enter the ID of the item you wish to update:'
@@ -67,16 +70,32 @@ function managerInput(){
 				newTransaction();
 			})
 		}
-		else if(answer.input == 4){
-			console.log('you have selected option ' + answer.input);
-			newTransaction();
-		}
-		else{
-			console.log('Please make a valid selection');
-			managerInput();
+		else if(answer.input === '4) Add new product'){
+			inquirer.prompt([{
+				name: 'product',
+				message: 'Enter name of product:'
+			},{
+				name: 'department',
+				message: 'Enter a department for this product'
+			},{
+				name: 'price',
+				message: 'Enter a price for this product'
+			},{
+				name: 'stock',
+				message: 'Please enter a stock quantity for this product'
+			}]).then(function(answer){
+				connection.query('INSERT into products SET ?', {
+					ProductName: answer.product,
+					DepartmentName: answer.department,
+					Price: answer.price,
+					StockQuantity: answer.stock
+				}, function(err, res){});
+				console.log('Product Added');
+				newTransaction();
+			})
 		}
 	})
-}
+};
 
 function newTransaction(){
 	inquirer.prompt([{
