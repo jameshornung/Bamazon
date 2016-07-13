@@ -1,5 +1,9 @@
 var inquirer = require('inquirer');
 var mysql = require('mysql');
+
+var amountOwed;
+var currentDepartment;
+
 var connection = mysql.createConnection({
 	host: 'localhost',
 	port: 3306,
@@ -64,14 +68,17 @@ function placeOrder(){
 			newOrder();
 		}
 		else{
+			amountOwed = res[0].Price * answer.selectQuantity;
+			currentDepartment = res[0].DepartmentName;
 			console.log('Thanks for your order');
-			console.log('You owe $' + res[0].Price * answer.selectQuantity);
+			console.log('You owe $' + amountOwed);
 			console.log('');
 			connection.query('UPDATE products SET ? Where ?', [{
 				StockQuantity: res[0].StockQuantity - answer.selectQuantity
 			},{
 				id: answer.selectId
 			}], function(err, res){});
+			logSaleToDepartment();
 			newOrder();
 		}
 	})
@@ -93,6 +100,21 @@ function newOrder(){
 			connection.end();
 		}
 	})
+};
+
+
+//function to push the sales to the executive table
+function logSaleToDepartment(){
+	var currentSales;
+	connection.query('SELECT * FROM departments WHERE DepartmentName = ?', [currentDepartment], function(err, res){
+		currentSales = res[0].TotalSales;
+	})
+
+	connection.query('UPDATE departments SET ? WHERE ?', [{
+		TotalSales: amountOwed + currentSales
+	},{
+		DepartmentName: currentDepartment
+	}], function(err, res){});
 };
 
 //Call the original function (all other functions are called recursively)
