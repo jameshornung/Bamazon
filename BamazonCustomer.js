@@ -3,6 +3,7 @@ var mysql = require('mysql');
 
 var amountOwed;
 var currentDepartment;
+var updateSales;
 
 var connection = mysql.createConnection({
 	host: 'localhost',
@@ -73,11 +74,13 @@ function placeOrder(){
 			console.log('Thanks for your order');
 			console.log('You owe $' + amountOwed);
 			console.log('');
+			//update products table
 			connection.query('UPDATE products SET ? Where ?', [{
 				StockQuantity: res[0].StockQuantity - answer.selectQuantity
 			},{
 				id: answer.selectId
 			}], function(err, res){});
+			//update departments table
 			logSaleToDepartment();
 			newOrder();
 		}
@@ -105,19 +108,20 @@ function newOrder(){
 
 //function to push the sales to the executive table
 function logSaleToDepartment(){
-	var currentSales;
 	connection.query('SELECT * FROM departments WHERE DepartmentName = ?', [currentDepartment], function(err, res){
-		currentSales = res[0].TotalSales;
+		updateSales = res[0].TotalSales + amountOwed;
+		updateDepartmentTable();
 	})
+};
 
-	connection.query('UPDATE departments SET ? WHERE ?', [{
-		TotalSales: amountOwed + currentSales
+function updateDepartmentTable(){
+		connection.query('UPDATE departments SET ? WHERE ?', [{
+		TotalSales: updateSales
 	},{
 		DepartmentName: currentDepartment
 	}], function(err, res){});
 };
-
-//Call the original function (all other functions are called recursively)
+//Call the original function (all other functions are called withing this function)
 //======================================================================
 showProducts();
 
