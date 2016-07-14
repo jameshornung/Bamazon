@@ -31,13 +31,13 @@ function managerInput(){
 			connection.query('SELECT * FROM products', function(err, res){
 			if (err) throw err;
 			console.log('');
-			console.log('Items in Store')
+			console.log('========================ITEMS IN STORE=======================');
 			for(i=0;i<res.length;i++){
 				console.log('Item ID:' + res[i].id);
 				console.log('Product Name: ' + res[i].ProductName);
 				console.log('Price: ' + '$' + res[i].Price);
 				console.log('Quantity in Stock: ' + res[i].StockQuantity);
-				console.log('');
+				console.log('---------------------');
 			}
 			console.log('')
 			newTransaction();
@@ -47,11 +47,12 @@ function managerInput(){
 			connection.query('SELECT * FROM products WHERE StockQuantity < 5', function(err, res){
 				if (err) throw err;
 				console.log('')
+				console.log('========================LOW INVENTORY=======================');
 				for(i=0;i<res.length;i++){
 					console.log('Name: ' + res[i].ProductName);
 					console.log('Product ID: ' + res[i].id);
 					console.log('Quantity in Stock: ' + res[i].StockQuantity);
-					console.log('---------------------------');
+					console.log('---------------------');
 				}
 				newTransaction();
 			})
