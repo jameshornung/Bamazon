@@ -34,10 +34,47 @@ function executiveOptions(){
 					console.log('Total Profit: ' + profit);
 					console.log('-----------------');
 				}
+			newTransaction();
 			})
 		}
 		else{
-			console.log('create new department')
+			addDepartment();
 		}
+
 	})
 };
+
+//Prompt the user to see if they would like to perform another transaction or end the connection
+function newTransaction(){
+	inquirer.prompt([{
+		type: 'confirm',
+		name: 'choice',
+		message: 'Would you like to perform another transaction?'
+	}]).then(function(answer){
+		if(answer.choice){
+			executiveOptions();
+		}
+		else{
+			console.log('Have a good day');
+			connection.end();
+		}
+	})
+}
+
+function addDepartment(){
+	inquirer.prompt([{
+		name: 'department',
+		message: 'Enter department name: '
+	},{
+		name: 'overhead',
+		message: 'Enter overhead costs: '
+	}]).then(function(answer){
+		//variable to hold the user inputs
+		var department = answer.department;
+		var overhead = answer.overhead;
+		connection.query('INSERT INTO departments SET ?', {
+			DepartmentName: department,
+			OverheadCost: overhead
+		}, function(err, res){});
+		newTransaction();
+})};
