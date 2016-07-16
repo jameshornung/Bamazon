@@ -21,7 +21,7 @@ The second app, BamazonManager.js, allows a "manager" to view available items, v
 The final app, BamazonExecutive.js, allows an "Executive" to view sales by department or add a new department.  Adding a new department is an important feature for the executive.  While the manager is capable of adding new products, including a department, revenue earned from that department cannot be tracked until after the manager had added that department to executive database.
 
 ###BamazonExecutive.js Screenshot
-![third screenshot](screenshots/screenShot4.png)
+![third screenshot](screenshots/screenshot4.png)
 
 
 
