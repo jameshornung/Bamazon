@@ -15,7 +15,7 @@ This program consists of three seperate, but related apps.  The first, BamazonCu
 The second app, BamazonManager.js, allows a "manager" to view available items, view low inventory (less than five in stock), add to the inventory, or add a new product.  
 
 ###BamazonManager.js Screenshot
-![second screenshot](screenshots/screenShot2.png)
+![second screenshot](screenshots/screenShot3.png)
 
 ##Bamazon Executive
 The final app, BamazonExecutive.js, allows an "Executive" to view sales by department or add a new department.  Adding a new department is an important feature for the executive.  While the manager is capable of adding new products, including a department, revenue earned from that department cannot be tracked until after the manager had added that department to executive database.
